@@ -50,3 +50,29 @@ $ echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/source
 $ apt-get update
 $ apt-get install -y kubelet kubeadm kubectl
 ```
+
+Neste momento fizemos inserimos o repositório do k8s nos nossos nodes, e fizemos a instalação do packages.  
+
+Agora vamos verificar se o driver cgroup usado pelo kubelete é o mesmo usado pelo docker. Para verificar isso, basta seguir os passo:  
+
+```  
+$ docker info | grep -i cgroup  
+  Cgroup Driver: cgroupfs  
+$ sed -i "s/cgroup-driver=systemd/cgroup-driver=cgroupfs/g" /etc/systemd/system/kubelet.service.d/10-kubeadn.conf
+$ systemctl daemon-reload
+$ systemctl restart kubelet
+```  
+
+Para finalizar a Instalação precisamos desabilitar nossa swap.
+
+```  
+$ swapoff -a  
+```  
+
+Comente tambem a referencia no fstab.
+
+```  
+$ vi /etc/fstab  
+```
+
+Nosso proximo passo é fazer a inicialização do nosso cluster.
