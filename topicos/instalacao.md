@@ -14,7 +14,7 @@ nf_conntrack_ipv4
 ip_vs
 ```
 
-Para os modulos serem carregados é preciso reiniciar a maquina. Aqui vamos usar o *modprobe* para inicializar eles sem precisar reiniciar as maquinas.  
+Como nao vou reiniciar a maqui na primeira vez, vamos usar o *modprobe* para inicializar eles.  
 
 ```
 $ modprobe br_netfilter ip_vs_rr ip_vs_wrr ip_vs_sh nf_conntrack_ipv4 ip_vs  
@@ -32,14 +32,11 @@ Agora precisamos instalar o Docker nas nossas maquinas, para isso digite:
 
 ```  
 $ curl -fsSl https://get.docker.com | bash   
-$ docker --version
 ```
 
 Assim a última versão do docker estara instalada nas maquinas.
 
 Mais informaçoes sobre Docker, [clique aqui](https://docs.docker.com/).  
-Primeiros passo com Docker, [clique aqui](https://adrianocanofre.dev/tutorial/docker-basico/).  
-
 
 ### Confirguração dos repositorios  
 
@@ -61,20 +58,12 @@ Agora vamos verificar se o driver cgroup usado pelo kubelete é o mesmo usado pe
 ```  
 $ docker info | grep -i cgroup  
   Cgroup Driver: cgroupfs  
-```
-Como podemos ver nesse caso, o driver utilizado pelo docker é o **cgroupfs**, e é esse valor q utilizaremos no cgroup do k8s.  
-
-```  
-$ sed -i "s/cgroup-driver=systemd/cgroup-driver=cgroupfs/g" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+$ sed -i "s/cgroup-driver=systemd/cgroup-driver=cgroupfs/g" /etc/systemd/system/kubelet.service.d/10-kubeadn.conf
 $ systemctl daemon-reload
 $ systemctl restart kubelet
 ```  
 
-
-Mais informaçoes https://kubernetes.io/docs/setup/independent/install-kubeadm/.
-
-
-Caso esteja utilizando VMs é preciso desligar a swap. Para finalizar a Instalação precisamos desabilitar nossa swap.
+Para finalizar a Instalação precisamos desabilitar nossa swap.
 
 ```  
 $ swapoff -a  
